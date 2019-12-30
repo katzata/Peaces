@@ -1,0 +1,87 @@
+* {
+	margin: 0;
+	box-sizing: border-box;
+}
+
+html {
+	height: 100vh;
+}
+
+body {
+	height: 100%;
+	background-color: black;
+}
+
+section {
+	position: relative;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.target {
+	width: 250px;
+	height: 88px;
+	box-shadow: 0 0 4px 2px #F49E00;
+	text-shadow: 0 0 6px;
+}
+
+.gridContainer {
+	position: relative;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.textContainer {
+	width: 100%;
+	height: 100%;
+	display: flex;
+}
+
+.text {
+	margin: auto;
+	color: #F49E00;
+	line-height: 60px;
+	font-size: 4em;
+	letter-spacing: 4px;
+	transition-duration: .1s;
+}
+
+.cellContainer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 0;
+	height: 0;
+}
+
+.hexStraigh, .hexSide1, .hexSide2 {
+	position: absolute;
+	left: 0;
+	top: 0;
+	border-radius: 2px;
+}
+
+.hexStraigh {
+	left: 0px;
+}
+
+.hexSide1 {
+	left: -2px;
+	top: 0;
+	width: 0;
+	height: 0;
+	transform: rotateZ(-60deg);
+}
+
+.hexSide2 {
+	left: 0px;
+	top: 0;
+	width: 0;
+	height: 0;
+	transform: rotateZ(60deg);
+}
