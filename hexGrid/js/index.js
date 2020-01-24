@@ -5,7 +5,7 @@
 // 12px difference between width and height 
 const hexGrid = {
 	text: "Button",
-	cellSize: 20,
+	cellSize: 12,
 	addition: 0,
 	rows: 0,
 	columns: 0,
