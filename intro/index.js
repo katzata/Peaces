@@ -3,58 +3,425 @@ const ctx = canvas.getContext('2d');
 
 let logo = document.createElement("img");
 logo.src = "img/roza2.png";
+let name = document.createElement("img");
+name.src = "img/name.svg";
+
+let static = document.createElement("audio");
+static.src = "audio/static.mp3";
+
+// k = 7
+// a = 7
+// m = 59
+// e = 11
+// n = 
+// 
+// 
+// 
 
 const intro = {
 	width: window.innerWidth,
 	height: window.innerHeight,
-	mainCounter: 0,
-	alpha: 0,
 	running: false,
+	mainCounter: 0,
+	offsetX: 0,
+	offsetY: 0,
+	logoAlpha: 1,
+	alphaIncrement: 0.005,
+	volume: 0,
+	volumeIncrement: 0.005,
+	distortionStartFrame1: 100,
+	distortionStartFrame2: 170,
+	lettersDelay: 12,
+ 	shadowOffsetIncrement: 0.05,
+	shadowOffsetLimiter: 5,
+	shadowOffsetToggleX: [
+		false, true, false, true, false, true, false,
+		true, false, true, false, true, false, true,
+	],
+	shadowOffsetToggleY: [
+		true, false, true, false, true, false, true,
+		false, true, false, true, false, true, false,
+	],
+	letterAlpha: [
+		0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0,
+	],
+	shadowOffsetX: [
+		5, 5, 5, 5, 5, 5, 5,
+		5, 5, 5, 5, 5, 5, 5,
+	],
+ 	shadowOffsetY: [
+		0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0,
+	],
+	randomiseOffset () {
+		intro.offsetX = -Math.random();
+		intro.offsetY = -Math.random();
+		
+		if (intro.mainCounter % 2 === 0) {
+			offsetX = -Math.random();
+			offsetY = -Math.random();
+		} else {
+			offsetX = Math.random();
+			offsetY = Math.random();
+		}
+	},
+	drawRose: () => {
+		ctx.save();
+		ctx.translate(-112, -300);
+		ctx.drawImage(logo, canvas.width / 2, canvas.height / 2);
+		ctx.restore();
+		
+		return ctx;
+	},
+	drawText: () => {
+		ctx.save();
+		
+		ctx.font = '40px Rune';
+		ctx.fillStyle = 'black';
+		ctx.textAligh = 'center';
+		ctx.textBaseline = 'center';
+		ctx.shadowBlur = 20;
+		ctx.shadowColor = "rgba(255, 255, 255, 1)";
+		ctx.strokeStyle = "#ffffff";
+
+		for (let i = 0; i < intro.shadowOffsetX.length; i++) {
+			if (intro.shadowOffsetToggleX[i] === true) {
+				intro.shadowOffsetX[i] += intro.shadowOffsetIncrement;
+				
+				if (intro.shadowOffsetX[i] >= intro.shadowOffsetLimiter) {
+					intro.shadowOffsetToggleX[i] = false;
+				}
+			} else {
+				intro.shadowOffsetX[i] -= intro.shadowOffsetIncrement;
+				
+				if (intro.shadowOffsetX[i] <= -intro.shadowOffsetLimiter) {
+					intro.shadowOffsetToggleX[i] = !intro.shadowOffsetToggleX[i];
+				}
+			}
+
+			if (intro.shadowOffsetToggleY[i] === true) {
+				intro.shadowOffsetY[i] += intro.shadowOffsetIncrement;
+				
+				if (intro.shadowOffsetY[i] >= intro.shadowOffsetLimiter) {
+					intro.shadowOffsetToggleY[i] = false;
+				}
+			} else {
+				intro.shadowOffsetY[i] -= intro.shadowOffsetIncrement;
+				
+				if (intro.shadowOffsetY[i] <= -intro.shadowOffsetLimiter) {
+					intro.shadowOffsetToggleY[i] = !intro.shadowOffsetToggleY[i];
+				}
+			}
+		}
+
+		intro.mainCounter++;
+
+		if (intro.mainCounter > 0) {
+			if (intro.letterAlpha[0] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[0];
+				intro.letterAlpha[0] += intro.alphaIncrement;
+			}
+
+			
+			ctx.shadowOffsetX = intro.shadowOffsetX[0];
+			ctx.shadowOffsetY = intro.shadowOffsetY[0];
+			ctx.fillText ('K', canvas.width / 2 - 194, canvas.height / 2 + 20);
+			
+			// ctx.strokeText('K', canvas.width / 2 - 194, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay) {
+			if (intro.letterAlpha[1] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[1];
+				intro.letterAlpha[1] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[1];
+			ctx.shadowOffsetY = intro.shadowOffsetY[1];
+			ctx.fillText  ('A', canvas.width / 2 - 165, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('A', canvas.width / 2 - 165, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 2) {
+			if (intro.letterAlpha[2] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[2];
+				intro.letterAlpha[2] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[2];
+			ctx.shadowOffsetY = intro.shadowOffsetY[2];
+			ctx.fillText  ('M', canvas.width / 2 - 136, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('M', canvas.width / 2 - 136, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 3) {
+			if (intro.letterAlpha[3] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[3];
+				intro.letterAlpha[3] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[3];
+			ctx.shadowOffsetY = intro.shadowOffsetY[3];
+			ctx.fillText  ('E', canvas.width / 2 - 100, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('E', canvas.width / 2 - 100, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 4) {
+			if (intro.letterAlpha[4] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[4];
+				intro.letterAlpha[4] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[4];
+			ctx.shadowOffsetY = intro.shadowOffsetY[4];
+			ctx.fillText  ('N', canvas.width / 2 - 76, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('N', canvas.width / 2 - 76, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 5) {
+			if (intro.letterAlpha[5] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[5];
+				intro.letterAlpha[5] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[5];
+			ctx.shadowOffsetY = intro.shadowOffsetY[5];
+			ctx.fillText  ('K', canvas.width / 2 - 37, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('K', canvas.width / 2 - 37, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 6) {
+			if (intro.letterAlpha[6] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[6];
+				intro.letterAlpha[6] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[6];
+			ctx.shadowOffsetY = intro.shadowOffsetY[6];
+			ctx.fillText  ('A', canvas.width / 2 - 7, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('A', canvas.width / 2 - 7, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 7) {
+			if (intro.letterAlpha[7] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[7];
+				intro.letterAlpha[7] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[7];
+			ctx.shadowOffsetY = intro.shadowOffsetY[7];
+			ctx.fillText  ('S', canvas.width / 2 + 21, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('S', canvas.width / 2 + 21, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 8) {
+			if (intro.letterAlpha[8] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[8];
+				intro.letterAlpha[8] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[8];
+			ctx.shadowOffsetY = intro.shadowOffsetY[8];
+			ctx.fillText  ('H', canvas.width / 2 + 43, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('H', canvas.width / 2 + 43, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 9) {
+			if (intro.letterAlpha[9] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[9];
+				intro.letterAlpha[9] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[9];
+			ctx.shadowOffsetY = intro.shadowOffsetY[9];
+			ctx.fillText  ('C', canvas.width / 2 + 71, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('C', canvas.width / 2 + 71, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 10) {
+			if (intro.letterAlpha[10] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[10];
+				intro.letterAlpha[10] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[10];
+			ctx.shadowOffsetY = intro.shadowOffsetY[10];
+			ctx.fillText  ('H', canvas.width / 2 + 98, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('H', canvas.width / 2 + 98, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 11) {
+			if (intro.letterAlpha[11] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[11];
+				intro.letterAlpha[11] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[11];
+			ctx.shadowOffsetY = intro.shadowOffsetY[11];
+			ctx.fillText  ('I', canvas.width / 2 + 127, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('I', canvas.width / 2 + 127, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 12) {
+			if (intro.letterAlpha[12] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[12];
+				intro.letterAlpha[12] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[12];
+			ctx.shadowOffsetY = intro.shadowOffsetY[12];
+			ctx.fillText  ('E', canvas.width / 2 + 141, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('E', canvas.width / 2 + 141, canvas.height / 2 + 20);
+		}
+
+		if (intro.mainCounter >= intro.lettersDelay * 13) {
+			if (intro.letterAlpha[13] <= 1) {
+				ctx.globalAlpha = intro.letterAlpha[13];
+				intro.letterAlpha[13] += intro.alphaIncrement;
+			}
+			
+			// ctx.save();
+			ctx.shadowOffsetX = intro.shadowOffsetX[13];
+			ctx.shadowOffsetY = intro.shadowOffsetY[13];
+			ctx.fillText  ('V', canvas.width / 2 + 164, canvas.height / 2 + 20);
+			// ctx.restore();
+			// ctx.strokeText('V', canvas.width / 2 + 164, canvas.height / 2 + 20);
+		}
+		
+		ctx.restore();
+	},
 	animate: () => {
 		intro.mainCounter++;
 
-		if (intro.mainCounter < 120) {
-			intro.alpha < 1 ? intro.alpha += 0.01 : null;
+		// let offsetX = -Math.random();
+		// let offsetY = -Math.random();
+		
+		// if (intro.mainCounter % 2 === 0) {
+		// 	offsetX = -Math.random();
+		// 	offsetY = -Math.random();
+		// } else {
+		// 	offsetX = Math.random();
+		// 	offsetY = Math.random();
+		// }
+
+		static.play();
+		static.volume = intro.volume;
+
+		intro.volume < 0.22 ? intro.volume += intro.volumeIncrement : null;
+
+		if (intro.logoAlpha <= 1 && intro.mainCounter <= 100) {
+			intro.logoAlpha += intro.alphaIncrement
 		}
 
-		if (intro.mainCounter >= 120 /*&& intro.mainCounter <= 123*/) {
+		// if (intro.logoAlpha <= 1) {
+		// 	console.log(intro.mainCounter)
+		// }
+
+		if (intro.mainCounter >= intro.distortionStartFrame1 && intro.mainCounter < intro.distortionStartFrame1 + 8) {
+			offsetX = offsetX * 100;
+			offsetY = offsetY * 100;
+			static.volume = 0.5;
+			intro.logoAlpha = Math.random();
+
 			switch (intro.mainCounter) {
-				case 120:
-					intro.alpha = 0.5;
+				case intro.distortionStartFrame1:
+					ctx.transform(1, 0, -.1, 1, 40 + offsetX, 0 + offsetY);
 				break;
 
-				case 121:
-					intro.alpha = 0.8;
+				case intro.distortionStartFrame1 + 1:
+					// ctx.transform(1, 0, -.2, 1, 79 + offsetX, 0 + offsetY);
 				break;
 
-				case 122:
-					intro.alpha = 0.4;
+				case intro.distortionStartFrame1 + 2:
+					ctx.transform(1, 0, -.3, 1, 119 + offsetX, 0 + offsetY);
 				break;
 
-				case 123:
-					intro.alpha = 0.9;
+				case intro.distortionStartFrame1 + 3:
+					// ctx.transform(1, 0, -.4, 1, 158 + offsetX, 0 + offsetY);
 				break;
 
-				case 124:
-					intro.alpha = 0.3;
+				case intro.distortionStartFrame1 + 4:
+					ctx.transform(1, 0, -.5, 1, 200 + offsetX, 0 + offsetY);
 				break;
 
-				case 125:
-					intro.alpha = 1;
+				case intro.distortionStartFrame1 + 5:
+					ctx.transform(1, 0, -.6, 1, 238 + offsetX, 0 + offsetY);
+				break;
+
+				case intro.distortionStartFrame1 + 6:
+					// ctx.transform(1, 0, -.5, 1, 200 + offsetX, 0 + offsetY);
+				break;
+
+				case intro.distortionStartFrame1 + 7:
+					ctx.transform(1, 0, -.4, 1, 158 + offsetX, 0 + offsetY);
+					intro.logoAlpha = 1;
 				break;
 			}
 		}
 
-		// if (intro.mainCounter >= 150 && intro.mainCounter <= 151) {
-		// 	ctx.rotate(22 * Math.PI / 180);
-		// 	ctx.transform(1, 0, .5, 1.3, -200, -220);
-		// } else if (intro.mainCounter >= 152 && intro.mainCounter <= 153) {
-		// 	ctx.rotate(22 * Math.PI / 180);
-		// 	ctx.transform(1, 0, .5, 1.3, -55, -220);
-		// }
+		if (intro.mainCounter >= intro.distortionStartFrame2 /*&& intro.mainCounter <= intro.distortionStartFrame2 + 17*/) {
+	
+			intro.logoAlpha = Math.random();
+			static.volume = 0.5;
 
-		if (intro.mainCounter === 200) {
-			intro.mainCounter = 0;
+			if (intro.mainCounter >= intro.distortionStartFrame2 + 3 && intro.mainCounter < intro.distortionStartFrame2 + 5) {
+				ctx.rotate(22 * Math.PI / 180);
+				ctx.transform(1, 0, .5, 1.3, -200 + offsetX * 5, -220 + offsetY * 5);
+			} else if (intro.mainCounter >= intro.distortionStartFrame2 + 5 && intro.mainCounter < intro.distortionStartFrame2 + 7) {
+				ctx.rotate(22 * Math.PI / 180);
+				ctx.transform(1, 0, .5, 1.3, -55 + offsetX * 5, -220 + offsetY * 5);
+			} else if (intro.mainCounter >= intro.distortionStartFrame2 + 7 && intro.mainCounter < intro.distortionStartFrame2 + 9) {
+				ctx.rotate(22 * Math.PI / 180);
+				ctx.transform(1, 0, .5, 1.3, -77 + offsetX * 5, -268 + offsetY * 5);
+			} else if (intro.mainCounter >= intro.distortionStartFrame2 + 9 && intro.mainCounter < intro.distortionStartFrame2 + 11) {
+				ctx.rotate(0 * Math.PI / 180);
+				ctx.transform(1, 0, 0, 1, 0 + offsetX * 5, 0 + offsetY * 5);
+			} else if (intro.mainCounter >= intro.distortionStartFrame2 + 11 && intro.mainCounter < intro.distortionStartFrame2 + 13) {
+				ctx.rotate(25 * Math.PI / 180);
+				ctx.transform(1.2, -1, .9, 2, -277 + offsetX * 5, -268 + offsetY * 5);
+			} else if (intro.mainCounter >= intro.distortionStartFrame2 + 13 && intro.mainCounter < intro.distortionStartFrame2 + 15) {
+				ctx.rotate(22 * Math.PI / 180);
+				ctx.transform(1, 0, .5, 1.3, -77 + offsetX * 5, -268 + offsetY * 5);
+			} else if (intro.mainCounter >= intro.distortionStartFrame2 + 15 && intro.mainCounter < intro.distortionStartFrame2 + 17) {
+				ctx.rotate(0 * Math.PI / 180);
+				ctx.transform(1, 0, 0, 1, 0 + offsetX * 5, 0 + offsetY * 5);
+			}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			if (intro.mainCounter === intro.distortionStartFrame2 + 17) {
+				intro.mainCounter = 0;
+				static.volume = 0.25;
+				intro.logoAlpha = 1;
+			}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 	}
 }
@@ -66,17 +433,39 @@ const loop = () => {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	// ctx.drawRect(0, 0, canvas.width, canvas.height);
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	// ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	intro.running ? intro.animate() : null;
 	
 	// ctx.rotate(25 * Math.PI / 180);
 	// ctx.transform(1.3,0,.5,1.1,-170,-230);
-	// ctx.rotate(22 * Math.PI / 180);
-	// ctx.transform(1, 0, .5, 1.3, -55, -220);
-	ctx.globalAlpha = intro.alpha;
-	ctx.translate(-112, -300);
-	ctx.drawImage(logo, canvas.width / 2, canvas.height / 2);
+	
+
+	// if (intro.running) {
+	// 	offsetX = Math.random();
+	// 	offsetY = Math.random();
+	// 	// ctx.rotate(25 * Math.PI / 180);
+	// 	// ctx.transform(1.2, -1, .9, 2, -277 + offsetX, -268 + offsetY);
+	// 	ctx.rotate(0 * Math.PI / 180);
+	// 	ctx.transform(1, 0, -.1, 1, 40 + offsetX, 0 + offsetY);
+	// } else {
+		// offsetX = Math.random();
+		// offsetY = Math.random();
+		// ctx.rotate(22 * Math.PI / 180);
+		// ctx.transform(1, 0, .5, 1.3, -77 + offsetX, -268 + offsetY);
+		offsetX = Math.random() / 2;
+		offsetY = Math.random() / 2;
+
+		intro.running ? intro.animate() : null;
+
+		ctx.rotate(0 * Math.PI / 180);
+		// ctx.transform(1, 0, 0, 1, 0 + offsetX, 0 + offsetY);
+	// }
+	
+	ctx.globalAlpha = intro.logoAlpha;
+	intro.randomiseOffset();
+	intro.drawRose();
+
+	intro.drawText();
 
 	window.requestAnimationFrame(loop);
 }

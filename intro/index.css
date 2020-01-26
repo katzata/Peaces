@@ -4,6 +4,11 @@
 	box-sizing: border-box;
 }
 
+@font-face {
+	/*font-family: Rune;*/
+	src: url(font/rune.ttf);
+}
+
 html{
 	height: 100vh;
 }
