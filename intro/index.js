@@ -32,8 +32,17 @@ const intro = {
 	distortionStartFrame1: 100,
 	distortionStartFrame2: 170,
 	lettersDelay: 12,
- 	shadowOffsetIncrement: 0.05,
-	shadowOffsetLimiter: 5,
+	shadowBlur: 8,
+	shadowBlurLimiter: 8,
+	shadowBlurIncrement: 0.2,
+	shadowBlurDone: false,
+	shadowBlurToggle: true,
+ 	shadowOffsetIncrement: 0.1,
+	shadowOffsetLimiter: 2,
+	shadowOffsetAllX: 0,
+	shadowOffsetAllY: 0,
+	shadowOffsetToggleAllX: false,
+	shadowOffsetToggleAllY: false,
 	shadowOffsetToggleX: [
 		false, true, false, true, false, true, false,
 		true, false, true, false, true, false, true,
@@ -47,8 +56,8 @@ const intro = {
 		0, 0, 0, 0, 0, 0, 0,
 	],
 	shadowOffsetX: [
-		5, 5, 5, 5, 5, 5, 5,
-		5, 5, 5, 5, 5, 5, 5,
+		1, 2, 3, 4, 5, 1, 2,
+		3, 4, 5, 1, 2, 3, 4,
 	],
  	shadowOffsetY: [
 		0, 0, 0, 0, 0, 0, 0,
@@ -76,46 +85,99 @@ const intro = {
 	},
 	drawText: () => {
 		ctx.save();
+
+		if (!intro.shadowOffsetDone) {
+			if (intro.letterAlpha[intro.letterAlpha.length - 1] >= 1) {
+				if (intro.shadowBlurToggle === true) {
+					intro.shadowBlur += intro.shadowBlurIncrement;
+
+					if (intro.shadowBlur >= intro.shadowBlurLimiter) {
+						intro.shadowBlurToggle = false;
+					}
+				} else {
+					intro.shadowBlur -= intro.shadowBlurIncrement;
+
+					if (intro.shadowBlur <= -intro.shadowBlurLimiter) {
+						intro.shadowBlurToggle = true;
+						intro.shadowOffsetDone = true;
+					}
+				}
+
+				
+				if (intro.shadowOffsetToggleAllX === true) {
+					intro.shadowOffsetAllX += intro.shadowOffsetIncrement;
+					
+					if (intro.shadowOffsetAllX >= intro.shadowOffsetLimiter) {
+						intro.shadowOffsetToggleAllX = false;
+					}
+				} else {
+					intro.shadowOffsetAllX -= intro.shadowOffsetIncrement;
+					
+					if (intro.shadowOffsetAllX <= -intro.shadowOffsetLimiter) {
+						intro.shadowOffsetToggleAllX = !intro.shadowOffsetToggleAllX;
+					}
+				}
+
+				if (intro.shadowOffsetToggleAllY === true) {
+					intro.shadowOffsetAllY += intro.shadowOffsetIncrement;
+					
+					if (intro.shadowOffsetAllY >= intro.shadowOffsetLimiter) {
+						intro.shadowOffsetToggleAllY = false;
+					}
+				} else {
+					intro.shadowOffsetAllY -= intro.shadowOffsetIncrement;
+					
+					if (intro.shadowOffsetAllY <= -intro.shadowOffsetLimiter) {
+						intro.shadowOffsetToggleAllY = !intro.shadowOffsetToggleAllY;
+						console.log("x")
+					}
+				}
+			}
+		}
 		
 		ctx.font = '40px Rune';
 		ctx.fillStyle = 'black';
 		ctx.textAligh = 'center';
 		ctx.textBaseline = 'center';
-		ctx.shadowBlur = 20;
+		ctx.shadowBlur = intro.shadowBlur;
+		ctx.translate(intro.offsetX, intro.offsetY);
 		ctx.shadowColor = "rgba(255, 255, 255, 1)";
 		ctx.strokeStyle = "#ffffff";
 
-		for (let i = 0; i < intro.shadowOffsetX.length; i++) {
-			if (intro.shadowOffsetToggleX[i] === true) {
-				intro.shadowOffsetX[i] += intro.shadowOffsetIncrement;
+		// for (let i = 0; i < intro.shadowOffsetX.length; i++) {
+		// 	if (intro.shadowOffsetToggleX[i] === true) {
+		// 		intro.shadowOffsetX[i] += intro.shadowOffsetIncrement;
 				
-				if (intro.shadowOffsetX[i] >= intro.shadowOffsetLimiter) {
-					intro.shadowOffsetToggleX[i] = false;
-				}
-			} else {
-				intro.shadowOffsetX[i] -= intro.shadowOffsetIncrement;
+		// 		if (intro.shadowOffsetX[i] >= intro.shadowOffsetLimiter) {
+		// 			intro.shadowOffsetToggleX[i] = false;
+		// 		}
+		// 	} else {
+		// 		intro.shadowOffsetX[i] -= intro.shadowOffsetIncrement;
 				
-				if (intro.shadowOffsetX[i] <= -intro.shadowOffsetLimiter) {
-					intro.shadowOffsetToggleX[i] = !intro.shadowOffsetToggleX[i];
-				}
-			}
+		// 		if (intro.shadowOffsetX[i] <= -intro.shadowOffsetLimiter) {
+		// 			intro.shadowOffsetToggleX[i] = !intro.shadowOffsetToggleX[i];
+		// 		}
+		// 	}
 
-			if (intro.shadowOffsetToggleY[i] === true) {
-				intro.shadowOffsetY[i] += intro.shadowOffsetIncrement;
+		// 	if (intro.shadowOffsetToggleY[i] === true) {
+		// 		intro.shadowOffsetY[i] += intro.shadowOffsetIncrement;
 				
-				if (intro.shadowOffsetY[i] >= intro.shadowOffsetLimiter) {
-					intro.shadowOffsetToggleY[i] = false;
-				}
-			} else {
-				intro.shadowOffsetY[i] -= intro.shadowOffsetIncrement;
+		// 		if (intro.shadowOffsetY[i] >= intro.shadowOffsetLimiter) {
+		// 			intro.shadowOffsetToggleY[i] = false;
+		// 		}
+		// 	} else {
+		// 		intro.shadowOffsetY[i] -= intro.shadowOffsetIncrement;
 				
-				if (intro.shadowOffsetY[i] <= -intro.shadowOffsetLimiter) {
-					intro.shadowOffsetToggleY[i] = !intro.shadowOffsetToggleY[i];
-				}
-			}
-		}
+		// 		if (intro.shadowOffsetY[i] <= -intro.shadowOffsetLimiter) {
+		// 			intro.shadowOffsetToggleY[i] = !intro.shadowOffsetToggleY[i];
+		// 		}
+		// 	}
+		// }
 
 		intro.mainCounter++;
+
+		ctx.shadowOffsetX = intro.shadowOffsetAllX;
+		ctx.shadowOffsetY = intro.shadowOffsetAllY;
 
 		if (intro.mainCounter > 0) {
 			if (intro.letterAlpha[0] <= 1) {
@@ -123,11 +185,7 @@ const intro = {
 				intro.letterAlpha[0] += intro.alphaIncrement;
 			}
 
-			
-			ctx.shadowOffsetX = intro.shadowOffsetX[0];
-			ctx.shadowOffsetY = intro.shadowOffsetY[0];
-			ctx.fillText ('K', canvas.width / 2 - 194, canvas.height / 2 + 20);
-			
+			ctx.fillText('K', canvas.width / 2 /*+ intro.offsetX */- 194, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('K', canvas.width / 2 - 194, canvas.height / 2 + 20);
 		}
 
@@ -137,11 +195,7 @@ const intro = {
 				intro.letterAlpha[1] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[1];
-			ctx.shadowOffsetY = intro.shadowOffsetY[1];
-			ctx.fillText  ('A', canvas.width / 2 - 165, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('A', canvas.width / 2 /*+ intro.offsetX */- 165, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('A', canvas.width / 2 - 165, canvas.height / 2 + 20);
 		}
 
@@ -151,11 +205,7 @@ const intro = {
 				intro.letterAlpha[2] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[2];
-			ctx.shadowOffsetY = intro.shadowOffsetY[2];
-			ctx.fillText  ('M', canvas.width / 2 - 136, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('M', canvas.width / 2 /*+ intro.offsetX */- 136, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('M', canvas.width / 2 - 136, canvas.height / 2 + 20);
 		}
 
@@ -165,11 +215,7 @@ const intro = {
 				intro.letterAlpha[3] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[3];
-			ctx.shadowOffsetY = intro.shadowOffsetY[3];
-			ctx.fillText  ('E', canvas.width / 2 - 100, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('E', canvas.width / 2 /*+ intro.offsetX */- 100, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('E', canvas.width / 2 - 100, canvas.height / 2 + 20);
 		}
 
@@ -179,11 +225,7 @@ const intro = {
 				intro.letterAlpha[4] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[4];
-			ctx.shadowOffsetY = intro.shadowOffsetY[4];
-			ctx.fillText  ('N', canvas.width / 2 - 76, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('N', canvas.width / 2 /*+ intro.offsetX */- 76, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('N', canvas.width / 2 - 76, canvas.height / 2 + 20);
 		}
 
@@ -193,11 +235,7 @@ const intro = {
 				intro.letterAlpha[5] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[5];
-			ctx.shadowOffsetY = intro.shadowOffsetY[5];
-			ctx.fillText  ('K', canvas.width / 2 - 37, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('K', canvas.width / 2 /*+ intro.offsetX */- 37, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('K', canvas.width / 2 - 37, canvas.height / 2 + 20);
 		}
 
@@ -207,11 +245,7 @@ const intro = {
 				intro.letterAlpha[6] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[6];
-			ctx.shadowOffsetY = intro.shadowOffsetY[6];
-			ctx.fillText  ('A', canvas.width / 2 - 7, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('A', canvas.width / 2 /*+ intro.offsetX */- 7, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('A', canvas.width / 2 - 7, canvas.height / 2 + 20);
 		}
 
@@ -221,11 +255,7 @@ const intro = {
 				intro.letterAlpha[7] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[7];
-			ctx.shadowOffsetY = intro.shadowOffsetY[7];
-			ctx.fillText  ('S', canvas.width / 2 + 21, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('S', canvas.width / 2 /*+ intro.offsetX */+ 21, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('S', canvas.width / 2 + 21, canvas.height / 2 + 20);
 		}
 
@@ -235,11 +265,7 @@ const intro = {
 				intro.letterAlpha[8] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[8];
-			ctx.shadowOffsetY = intro.shadowOffsetY[8];
-			ctx.fillText  ('H', canvas.width / 2 + 43, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('H', canvas.width / 2 /*+ intro.offsetX */+ 43, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('H', canvas.width / 2 + 43, canvas.height / 2 + 20);
 		}
 
@@ -249,11 +275,7 @@ const intro = {
 				intro.letterAlpha[9] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[9];
-			ctx.shadowOffsetY = intro.shadowOffsetY[9];
-			ctx.fillText  ('C', canvas.width / 2 + 71, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('C', canvas.width / 2 /*+ intro.offsetX */+ 71, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('C', canvas.width / 2 + 71, canvas.height / 2 + 20);
 		}
 
@@ -263,11 +285,7 @@ const intro = {
 				intro.letterAlpha[10] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[10];
-			ctx.shadowOffsetY = intro.shadowOffsetY[10];
-			ctx.fillText  ('H', canvas.width / 2 + 98, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('H', canvas.width / 2 /*+ intro.offsetX */+ 98, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('H', canvas.width / 2 + 98, canvas.height / 2 + 20);
 		}
 
@@ -277,11 +295,7 @@ const intro = {
 				intro.letterAlpha[11] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[11];
-			ctx.shadowOffsetY = intro.shadowOffsetY[11];
-			ctx.fillText  ('I', canvas.width / 2 + 127, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('I', canvas.width / 2 /*+ intro.offsetX */+ 127, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('I', canvas.width / 2 + 127, canvas.height / 2 + 20);
 		}
 
@@ -291,11 +305,7 @@ const intro = {
 				intro.letterAlpha[12] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[12];
-			ctx.shadowOffsetY = intro.shadowOffsetY[12];
-			ctx.fillText  ('E', canvas.width / 2 + 141, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('E', canvas.width / 2 /*+ intro.offsetX */+ 141, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('E', canvas.width / 2 + 141, canvas.height / 2 + 20);
 		}
 
@@ -305,11 +315,7 @@ const intro = {
 				intro.letterAlpha[13] += intro.alphaIncrement;
 			}
 			
-			// ctx.save();
-			ctx.shadowOffsetX = intro.shadowOffsetX[13];
-			ctx.shadowOffsetY = intro.shadowOffsetY[13];
-			ctx.fillText  ('V', canvas.width / 2 + 164, canvas.height / 2 + 20);
-			// ctx.restore();
+			ctx.fillText('V', canvas.width / 2 /*+ intro.offsetX */+ 164, canvas.height / 2 /*+ intro.offsetY*/ + 20);
 			// ctx.strokeText('V', canvas.width / 2 + 164, canvas.height / 2 + 20);
 		}
 		
